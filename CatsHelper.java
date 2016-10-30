@@ -3,14 +3,16 @@ import java.util.List;
 
 import android.net.Uri;
 
+import rx.Observable;
+
 public class CatsHelper {
 
     ApiWrapper apiWrapper;
 
-    public AsyncJob<Uri> saveTheCutestCat(String query) {
-        AsyncJob<List<Cat>> catsListAsyncJob = apiWrapper.queryCats(query);
-        AsyncJob<Cat> cutestCatAsyncJob = catsListAsyncJob.map(cats -> findCutest(cats));
-        AsyncJob<Uri> storedUriAsyncJob = cutestCatAsyncJob.flatMap(cat -> apiWrapper.store(cat));
+    public Observable<Uri> saveTheCutestCat(String query) {
+        Observable<List<Cat>> catsListAsyncJob = apiWrapper.queryCats(query);
+        Observable<Cat> cutestCatAsyncJob = catsListAsyncJob.map(cats -> findCutest(cats));
+        Observable<Uri> storedUriAsyncJob = cutestCatAsyncJob.flatMap(cat -> apiWrapper.store(cat));
         return storedUriAsyncJob;
     }
 
