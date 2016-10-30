@@ -16,33 +16,12 @@ public class CatsHelper {
             }
         });
 
-        AsyncJob<Uri> storedUriAsyncJob = new AsyncJob<Uri>() {
+        AsyncJob<Uri> storedUriAsyncJob = cutestCatAsyncJob.flatMap(new Func<Cat, AsyncJob<Uri>>() {
             @Override
-            public void start(final Callback<Uri> cutestCatCallback) {
-                cutestCatAsyncJob.start(new Callback<Cat>() {
-                    @Override
-                    public void onResult(Cat cutest) {
-                        apiWrapper.store(cutest)
-                                .start(new Callback<Uri>() {
-                                    @Override
-                                    public void onResult(Uri result) {
-                                        cutestCatCallback.onResult(result);
-                                    }
-
-                                    @Override
-                                    public void onError(Exception e) {
-                                        cutestCatCallback.onError(e);
-                                    }
-                                });
-                    }
-
-                    @Override
-                    public void onError(Exception e) {
-                        cutestCatCallback.onError(e);
-                    }
-                });
+            public AsyncJob<Uri> call(Cat cat) {
+                return apiWrapper.store(cat);
             }
-        };
+        });
         return storedUriAsyncJob;
     }
 
